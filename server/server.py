@@ -37,5 +37,29 @@ def login():
         return jsonify(access_token=access_token)
     return jsonify({"msg": "Bad username or password"}), 401
 
+# Retrieve claim record list of an employee
+@app.route('/claim',methods=['GET'])
+@jwt_required()
+def get_claim_records():
+    jwt_claims = get_jwt()
+    employeeId = jwt_claims['EmployeeID']
+    if mydb.Employee.find({"EmployeeID":employeeId}) and mydb.ProjectExpenseClaims.find({"EmployeeID":employeeId}):
+        if mydb.ProjectExpenseClaims.find({"EmployeeID":employeeId}):
+            claims = mydb.ProjectExpenseClaims.find({"EmployeeID": employeeId})
+            claim_records = []
+            for claim in claims:
+                claim_record = {
+                    "ClaimID": claim["ClaimID"],
+                    "ProjectID": claim["ProjectID"],
+                    "CurrencyID": claim["CurrencyID"],
+                    "Amount": claim["Amount"],
+                    "Status": claim["Status"]
+                }
+                claim_records.append(claim_record)
+            return claim_records
+    else:
+        return {"message": "User is not authorised."}, 404
+    return {"message": "Employee not found."}, 404
+
 if __name__ == "__main__":
     app.run(debug=True)
