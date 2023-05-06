@@ -90,10 +90,11 @@ const CreateClaim = ({onCreate}) => {
           <Form.Control type="text" placeholder='Enter Purpose' value={purpose} onChange={(e) => setPurpose(e.target.value)}/>
         </Form.Group>
 
-
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+        <Row className="mb-3">
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Row>
       </Form>
       </Container>
   )
