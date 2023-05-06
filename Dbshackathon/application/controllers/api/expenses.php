@@ -31,6 +31,31 @@ class Expenses extends REST_Controller{
             $this->response($currencies_list, REST_Controller::HTTP_NOT_FOUND);
         }
    }
+
+
+   public function claiminfo_get(){
+    //list data method
+    //echo "This is GET Method";
+    $data = json_decode(file_get_contents("php://input"));
+    if(isset($data->id)){
+        $claim_id = $data->id;
+    }
+    else{
+        $claim_information = array("Unable to reteive claim information");
+        $this->response($claim_information, REST_Controller::HTTP_NOT_FOUND);
+    }
+    $claim_inform = $this->claims_model->get_claiminfo($claim_id);
+
+    $claim_information = array("Unable to reteive claim information");
+
+    if(count($claim_inform)>0){
+        $claim_information = $claim_inform;
+        $this->response($claim_information, REST_Controller::HTTP_OK);
+    }
+    else{
+        $this->response($claim_information, REST_Controller::HTTP_NOT_FOUND);
+    }
+}
 }
 
 ?>
