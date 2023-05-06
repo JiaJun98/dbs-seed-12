@@ -4,32 +4,46 @@ import Button from "react-bootstrap/Button";
 export default function Login({setToken, navigate}) {
   const [employeeId, setEmployeeId] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false)
 
   function validateForm() {
     return employeeId.length > 0 && password.length > 0;
   }
 
   async function loginUser(user) {
-    return fetch('http://localhost:8080/login', {
+    return fetch('http://127.0.0.1:5000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(user)
     })
-      .then(data => data.json())
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      } else {
+        setError(false);
+        return res.json()
+      }
+    })
+    .catch(error => {
+      setError(true);
+      console.error('There was a problem with the fetch operation:', error);
+    });
    }
       
    async function handleSubmit (event) {
     event.preventDefault();
     const user = {
-      "employeeId": employeeId,
-      "password": password
+      "EmployeeID": employeeId,
+      "Password": password
     };
-    // const token = await loginUser(user)
-    const token ="test123"
-    setToken(token);
-    navigate('/create');
+    console.log(user)
+    const token = await loginUser(user)
+    if (!error) {
+      setToken(token["access_token"]);
+      navigate('/create');
+    }
   }
   return (
     <div className="flex h-screen bg-sky-100">
@@ -56,6 +70,11 @@ export default function Login({setToken, navigate}) {
           <Button className="mt-4 text-base" variant="primary" size="lg" type="submit" disabled={!validateForm()}>
             Login
           </Button>
+          { error ? 
+          <div className="py-4 text-red-500">
+            There is an error with your user name or password
+          </div> : ""
+          }
         </Form>
       </div>
     </div>
