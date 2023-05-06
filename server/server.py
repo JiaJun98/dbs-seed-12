@@ -25,24 +25,7 @@ client = MongoClient(connection)
 mydb = client.mydb
 
 
-#### Retrieve Project ID
-@app.route("/info", methods=['GET'])
-def get_info():
-    payload = get_jwt()
-    employee_id = payload['EmployeeID']
-    if mydb.Employee.find_one({'EmployeeID':employee_id}):
-        # Retrieving Project IDS
-        projects = mydb.EmployeeProjects.find({'EmployeeID':employee_id})
-        project_ids = []
-        for project in projects:
-            project_ids.append(project['ProjectID'])
-        return jsonify({"ProjectIDs":project_ids})
-        
-
-
-
-
-##### Retrieve claim records list #####
+##### BOILERPLATE #####
 @app.route('/claim',methods=['GET'])
 @jwt_required()
 def get_transac():
@@ -57,6 +40,36 @@ def get_transac():
     else:
         return {"message": "User is not authorised."}, 404
     return {"message": "Account not found."}, 404
+
+
+#### Retrieve Project ID
+@app.route("/info", methods=['GET'])
+@jwt_required()
+def get_info():
+    payload = get_jwt()
+    employee_id = payload['EmployeeID']
+    if mydb.Employee.find_one({'EmployeeID':employee_id}):
+        # Retrieving Project IDS
+        projects = mydb.EmployeeProjects.find({'EmployeeID':int(employee_id)})
+        project_ids = []
+        for project in projects:
+            project_ids.append(project['ProjectID'])
+        if len(project_ids) > 0:
+            return jsonify({"ProjectIDs":project_ids})
+        else:
+            return {"message": "No Projects Found."}, 404 
+    else:
+        return  {"message": "Employee not found."}, 404       
+
+
+#### Create Claim ####
+@app.route("/create", methods=['GET'])
+@jwt_required
+def create_claim():
+    payload = get_jwt()
+    
+    
+    
 
 
 #User Log in 
