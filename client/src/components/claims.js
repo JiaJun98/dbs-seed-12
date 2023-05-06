@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import {useNavigate} from 'react-router-dom';
 import "../components/claims.css";
 
 
@@ -7,7 +8,7 @@ const ListClaims = () => {
 
     const getClaims = async () => {
         try {
-            const post = await fetch('http://localhost:5000/claims')
+            const post = await fetch('http://localhost:5000/claim')
 
             const jsonData = await post.json();
 
@@ -20,6 +21,8 @@ const ListClaims = () => {
     useEffect(() => {
         getClaims();
     }, []);
+
+    
 
     const claim2 = [
         {ClaimID: '11147',
@@ -86,8 +89,11 @@ const ListClaims = () => {
         LastEditedClaimDate: '2023-04-30T14:30:00+08:00'
         },
       ]
+    const navigate = useNavigate();
 
-
+    const navigateEdit = () => {
+        navigate('/create');
+      };
     return(
         <>
         <table className="styled-table">
@@ -110,8 +116,9 @@ const ListClaims = () => {
                         <td>{claim.Amount} {claim.CurrencyID}</td>
                         <td>{claim.Status}</td>
                         <td>{claim.ClaimID}</td>
-                        <td><button className="btn1">Edit</button>
-                        <button>Delete</button></td>
+                        {claim.Status!=='Approved'?
+                        <td><button className="btn1" onClick={navigateEdit}>Edit</button>  
+                        <button>Delete</button></td>: <td></td>}
                     </tr>
                 ))}
             </tbody>
