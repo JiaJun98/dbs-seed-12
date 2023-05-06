@@ -2,6 +2,8 @@ import { Route, Routes, useNavigate } from "react-router-dom"
 import Login from "./components/Login";
 import { useEffect, useState } from "react";
 import CreateClaim from "./components/createClaim"
+import logo from './logo.svg';
+import './App.css';
 
 export function App() {
   const [token, setToken] = useState("")
