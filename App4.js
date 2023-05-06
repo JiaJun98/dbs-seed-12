@@ -28,7 +28,7 @@ if (error) {
         return (
             <ul>
                 {users.map(user => (
-                <li key={user.id}>
+                <li key={user.CurrencyID}>
                     {user.CurrencyID} 
                 </li>
                 ))}
