@@ -25,23 +25,6 @@ connection = 'mongodb://rwuser:Singapore123!@190.92.206.138:27017,159.138.120.22
 client = MongoClient(connection)
 mydb = client.mydb
 
-##### BOILERPLATE #####
-@app.route('/claim',methods=['GET'])
-@jwt_required()
-def get_transac():
-    claims = get_jwt()
-    userId = claims['id']
-    if mydb.user.find({"userId":userId}) and mydb.account.find({"userId":userId}):
-        if mydb.account.find({"userId":userId}):
-            account = mydb.account.find({"userId":userId})
-            account_data = parse_json(account)
-            account_id = account_data[0]["accountId"]
-            return ({"claims":parse_json(mydb.claim.find({"accountId":account_id}))}, 200)
-    else:
-        return {"message": "User is not authorised."}, 404
-    return {"message": "Account not found."}, 404
-
-
 #### Retrieve Project ID
 @app.route("/info", methods=['GET'])
 @jwt_required()
@@ -132,6 +115,27 @@ def get_claim_records():
     else:
         return {"message": "User is not authorised."}, 404
     return {"message": "Employee not found."}, 404
+
+@app.route('/delete',methods=['DELETE'])
+@jwt_required()
+def delete_transaction():
+    claims = get_jwt()
+    employeeid = claims['EmployeeID']
+    employeeCheck = parse_json(mydb.Employee.find({"EmployeeID":employeeid}))
+    if employeeid == employeeCheck[0]['EmployeeID']:
+        claims_data = request.get_json() #Claims_ID
+        claimID = claims_data['ClaimID']
+        if mydb.ProjectExpenseClaims.find({"ClaimID":claimID}):
+            claimOutput = parse_json(mydb.ProjectExpenseClaims.find({"ClaimID":claimID}))
+            db_claimID = claimOutput[0]['ClaimID']
+            if claimID == db_claimID:
+                delete_col = mydb['ProjectExpenseClaims']
+                delete_col.delete_one(claims_data)
+                return {"message":"Transaction has been deleted."}, 200    
+    else:
+        return {"message": "User is not authorised."}, 404
+    return {"message":"Transaction ID cannot be found."}, 404
+
 
 if __name__ == "__main__":
     app.run(debug=True)
