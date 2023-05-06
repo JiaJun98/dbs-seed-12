@@ -1,6 +1,7 @@
 import { Container } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import React, { useState, useEffect }  from 'react';//added this
 
 
 export default function CreateClaim() {
@@ -15,6 +16,26 @@ export default function CreateClaim() {
       console.log("Thing was not saved to the database.");
     }
   };
+
+  //added this
+  const [error, setError] = useState(null);
+      const [isLoaded, setIsLoaded] = useState(false);
+      const [users, setUsers] = useState([]);
+      useEffect(() => {
+          fetch("http://127.0.0.1:80/Dbshackathon/index.php/api/expenses/currencies")
+              .then(res => res.json())
+              .then(
+                  (data) => {
+                      setIsLoaded(true);
+                      setUsers(data);
+                  },
+                  (error) => {
+                      setIsLoaded(true);
+                      setError(error);
+                  }
+              )
+        }, [])
+    //-----------------------------------------------------------------------------------
 
   return (
     <Container>
@@ -40,6 +61,14 @@ export default function CreateClaim() {
         <Form.Group className="mb-3" controlId="formAmount">
           <Form.Label>Amount</Form.Label>
           <Form.Control type="text" placeholder='Enter Amount' />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formProjectid">
+          <Form.Label>Currency</Form.Label>
+          <Form.Select>
+            <option value="">select</option>
+            {users.map(user => (<option value={user.CurrencyID}>{user.CurrencyID}</option>))}
+          </Form.Select>
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formExpenseDate">
