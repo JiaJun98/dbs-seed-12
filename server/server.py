@@ -41,7 +41,6 @@ def get_transac():
         return {"message": "User is not authorised."}, 404
     return {"message": "Account not found."}, 404
 
-
 #### Retrieve Project ID
 @app.route("/info", methods=['GET'])
 @jwt_required()
@@ -61,19 +60,11 @@ def get_info():
     else:
         return  {"message": "Employee not found."}, 404       
 
-
-
-
 #### Create Claim ####
 @app.route("/create", methods=['GET'])
 @jwt_required
 def create_claim():
     payload = get_jwt()
-
-
-    
-    
-    
 
 
 #User Log in 
