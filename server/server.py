@@ -13,16 +13,34 @@ from flask_cors import CORS
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'super-secret'
-app.config['MONGO_URI'] = 'mongodb+srv://admin:admin123@cluster0.vzzddp2.mongodb.net/?retryWrites=true&w=majority'
+app.config['MONGO_URI'] = 'mongodb://rwuser:Singapore123!@190.92.206.138:27017,159.138.120.227:27017/test?authSource=admin'
 bcrypt = Bcrypt(app)
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 CORS(app)
 jwt = JWTManager(app)
 #### Setting up MongoDB ####
-connection = 'mongodb+srv://admin:admin123@cluster0.vzzddp2.mongodb.net/?retryWrites=true&w=majority'
+connection = 'mongodb://rwuser:Singapore123!@190.92.206.138:27017,159.138.120.227:27017/test?authSource=admin'
 client = MongoClient(connection)
 mydb = client.mydb
+
+
+#### Retrieve Project ID
+@app.route("/info", methods=['GET'])
+def get_info():
+    payload = get_jwt()
+    employee_id = payload['EmployeeID']
+    if mydb.Employee.find_one({'EmployeeID':employee_id}):
+        # Retrieving Project IDS
+        projects = mydb.EmployeeProjects.find({'EmployeeID':employee_id})
+        project_ids = []
+        for project in projects:
+            project_ids.append(project['ProjectID'])
+        return jsonify({"ProjectIDs":project_ids})
+        
+
+
+
 
 ##### Retrieve claim records list #####
 @app.route('/claim',methods=['GET'])
