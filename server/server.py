@@ -24,7 +24,6 @@ connection = 'mongodb://rwuser:Singapore123!@190.92.206.138:27017,159.138.120.22
 client = MongoClient(connection)
 mydb = client.mydb
 
-
 ##### BOILERPLATE #####
 @app.route('/claim',methods=['GET'])
 @jwt_required()
@@ -67,10 +66,6 @@ def get_info():
 @jwt_required
 def create_claim():
     payload = get_jwt()
-    
-    
-    
-
 
 #User Log in 
 @app.route("/login", methods=["POST"])
@@ -84,6 +79,35 @@ def login():
         access_token = create_access_token(identity=employeeid,additional_claims=additional_claims)
         return jsonify(access_token=access_token)
     return jsonify({"msg": "Bad username or password"}), 401
+
+#Update User
+@app.route('/update',methods=['POST'])
+@jwt_required()
+def update():
+    claims =get_jwt()
+    employeeid = claims['EmployeeID']
+    if mydb.ProjectExpenseClaim.find({"EmployeeID":employeeid}):
+        firstname = request.json.get("FirstName")
+        lastname = request.json.get("LastName")
+        projectid = request.json.get("ProjectID")
+        amount = request.json.get("Amount")
+        purpose = request.json.get("Purpose")
+        mydb.Employee.find_one_and_update(
+            {"EmployeeID":employeeid},
+            {"$set" : {"FirstName":firstname,"LastName":lastname}}
+        )
+        mydb.EmployeeProjects.find_one_and_update(
+            {"EmployeeID":employeeid},
+            {"$set" : {"ProjectID":projectid}}
+        )
+        mydb.ProjectExpenseClaims.find_one_and_update(
+            {"EmployeeID":employeeid},
+            {"$set" : {"Amount":amount,"Purpose":purpose}}
+        )
+        return {"message":"Claims have been updated."}
+    return {"message":"User is not authorised."}
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
