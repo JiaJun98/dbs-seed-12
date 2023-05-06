@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-export default function Login({setToken}) {
+export default function Login({setToken, navigate}) {
   const [employeeId, setEmployeeId] = useState("");
   const [password, setPassword] = useState("");
 
@@ -29,6 +29,7 @@ export default function Login({setToken}) {
     // const token = await loginUser(user)
     const token ="test123"
     setToken(token);
+    navigate('/create');
   }
   return (
     <div className="flex h-screen bg-sky-100">
