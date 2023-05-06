@@ -1,6 +1,17 @@
-import './App4.css';
+import './App.css';
 import React, { useState, useEffect }  from 'react';
 
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const answer = window.confirm("are you sure?");
+  if (answer) {
+    // Save it!
+    console.log("Thing was saved to the database.");
+  } else {
+    // Do nothing!
+    console.log("Thing was not saved to the database.");
+  }
+};
 
 const App = () => {
 const [error, setError] = useState(null);
@@ -26,14 +37,17 @@ if (error) {
         return <div>Loading...</div>;
     } else {
         return (
-            <ul>
-                {users.map(user => (
-                <li key={user.CurrencyID}>
-                    {user.CurrencyID} 
-                </li>
-                ))}
-            </ul>
+          <form onSubmit={handleSubmit}>
+            <select id='currency' name='currency'>
+              <option value="">select</option>
+              {users.map(user => (<option value={user.CurrencyID}>{user.CurrencyID}</option>))}
+            </select>
+            <br></br><br></br>
+            <button variant="primary" type="submit">
+            Submit
+            </button>
+          </form>
         );
     }
 }
-export default App4;
+export default App;
