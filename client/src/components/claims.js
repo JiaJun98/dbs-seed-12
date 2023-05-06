@@ -109,7 +109,7 @@ const ListClaims = () => {
                 </tr>
             </thead>
             <tbody>
-                {claim2.map(claim => (
+                {claims.map(claim => (
                     <tr key={claim._id}>
                         <td>{claim.ClaimID}</td>
                         <td>{claim.ProjectID}</td>

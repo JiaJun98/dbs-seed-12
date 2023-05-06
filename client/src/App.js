@@ -2,6 +2,7 @@ import { Route, Routes, useNavigate } from "react-router-dom"
 import Login from "./components/Login";
 import { useState } from "react";
 import CreateClaim from "./components/createClaim"
+import ListClaims from "./components/claims.js"
 import './App.css';
 
 export function App() {
