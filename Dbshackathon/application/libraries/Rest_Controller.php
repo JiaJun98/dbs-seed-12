@@ -1,5 +1,14 @@
 <?php
 namespace Restserver\Libraries;
+use Restserver\Libraries\REST_Controller;
+
+header('Access-Control-Allow-Origin: *');
+
+if($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    exit;
+}
 
 use Exception;
 use Restserver\Libraries\Format;
