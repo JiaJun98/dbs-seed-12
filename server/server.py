@@ -24,6 +24,49 @@ connection = 'mongodb://rwuser:Singapore123!@190.92.206.138:27017,159.138.120.22
 client = MongoClient(connection)
 mydb = client.mydb
 
+##### BOILERPLATE #####
+@app.route('/claim',methods=['GET'])
+@jwt_required()
+def get_transac():
+    claims = get_jwt()
+    userId = claims['id']
+    if mydb.user.find({"userId":userId}) and mydb.account.find({"userId":userId}):
+        if mydb.account.find({"userId":userId}):
+            account = mydb.account.find({"userId":userId})
+            account_data = parse_json(account)
+            account_id = account_data[0]["accountId"]
+            return ({"claims":parse_json(mydb.claim.find({"accountId":account_id}))}, 200)
+    else:
+        return {"message": "User is not authorised."}, 404
+    return {"message": "Account not found."}, 404
+
+
+#### Retrieve Project ID
+@app.route("/info", methods=['GET'])
+@jwt_required()
+def get_info():
+    payload = get_jwt()
+    employee_id = payload['EmployeeID']
+    if mydb.Employee.find_one({'EmployeeID':employee_id}):
+        # Retrieving Project IDS
+        projects = mydb.EmployeeProjects.find({'EmployeeID':int(employee_id)})
+        project_ids = []
+        for project in projects:
+            project_ids.append(project['ProjectID'])
+        if len(project_ids) > 0:
+            return jsonify({"ProjectIDs":project_ids})
+        else:
+            return {"message": "No Projects Found."}, 404 
+    else:
+        return  {"message": "Employee not found."}, 404       
+
+
+#### Create Claim ####
+@app.route("/create", methods=['GET'])
+@jwt_required
+def create_claim():
+    payload = get_jwt()
+
 #User Log in 
 @app.route("/login", methods=["POST"])
 def login():
@@ -65,6 +108,29 @@ def update():
     return {"message":"User is not authorised."}
 
 
+# Retrieve claim record list of an employee
+@app.route('/claim',methods=['GET'])
+@jwt_required()
+def get_claim_records():
+    jwt_claims = get_jwt()
+    employeeId = jwt_claims['EmployeeID']
+    if mydb.Employee.find({"EmployeeID":employeeId}) and mydb.ProjectExpenseClaims.find({"EmployeeID":employeeId}):
+        if mydb.ProjectExpenseClaims.find({"EmployeeID":employeeId}):
+            claims = mydb.ProjectExpenseClaims.find({"EmployeeID": employeeId})
+            claim_records = []
+            for claim in claims:
+                claim_record = {
+                    "ClaimID": claim["ClaimID"],
+                    "ProjectID": claim["ProjectID"],
+                    "CurrencyID": claim["CurrencyID"],
+                    "Amount": claim["Amount"],
+                    "Status": claim["Status"]
+                }
+                claim_records.append(claim_record)
+            return claim_records
+    else:
+        return {"message": "User is not authorised."}, 404
+    return {"message": "Employee not found."}, 404
 
 if __name__ == "__main__":
     app.run(debug=True)
