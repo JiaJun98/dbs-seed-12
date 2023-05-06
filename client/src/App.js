@@ -1,31 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom"
+import CreateClaim from "./components/createClaim"
 import ListClaims from "./components/claims.js";
+// import { Home } from "./Home"
+// import { BookList } from "./BookList"
 
-function App() {
+//Create Claim API
+
+
+export function App() {
   return (
-    <>
-    <div>
-      <ListClaims />
-    </div>
-    </>
-    /*<div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>*/
-  );
+    <Routes>
+      {/* <Route path="/" element={<Home />} />
+      <Route path="/books" element={<BookList />} /> */}
+      <Route path="/create" element={ <CreateClaim />} />
+      <Route path="/claims" element={ <ListClaims />} />
+    </Routes>
+  )
 }
-
 export default App;
