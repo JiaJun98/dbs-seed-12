@@ -40,16 +40,5 @@ def get_transac():
         return {"message": "User is not authorised."}, 404
     return {"message": "Account not found."}, 404
 
-@app.route('/claim',methods=['DELETE'])
-def delete_transac():
-    claims = get_jwt()
-    userId = claims['id']
-    if mydb.user.find({"userId":userId}) and mydb.account.find({"userId":userId}):
-        if mydb.account.find({"userId":userId}):
-            mydb.products.deleteOne({ "_id": 1 })
-    else:
-        return {"message": "User is not authorised."}, 404
-    return {"message": "Account not found."}, 404
-
 if __name__ == "__main__":
     app.run(debug=True)
