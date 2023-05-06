@@ -116,5 +116,26 @@ def get_claim_records():
         return {"message": "User is not authorised."}, 404
     return {"message": "Employee not found."}, 404
 
+@app.route('/delete',methods=['DELETE'])
+@jwt_required()
+def delete_transaction():
+    claims = get_jwt()
+    employeeid = claims['EmployeeID']
+    employeeCheck = parse_json(mydb.Employee.find({"EmployeeID":employeeid}))
+    if employeeid == employeeCheck[0]['EmployeeID']:
+        claims_data = request.get_json() #Claims_ID
+        claimID = claims_data['ClaimID']
+        if mydb.ProjectExpenseClaims.find({"ClaimID":claimID}):
+            claimOutput = parse_json(mydb.ProjectExpenseClaims.find({"ClaimID":claimID}))
+            db_claimID = claimOutput[0]['ClaimID']
+            if claimID == db_claimID:
+                delete_col = mydb['ProjectExpenseClaims']
+                delete_col.delete_one(claims_data)
+                return {"message":"Transaction has been deleted."}, 200    
+    else:
+        return {"message": "User is not authorised."}, 404
+    return {"message":"Transaction ID cannot be found."}, 404
+
+
 if __name__ == "__main__":
     app.run(debug=True)
