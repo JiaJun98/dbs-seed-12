@@ -42,7 +42,7 @@ export default function Login({setToken, navigate}) {
     const token = await loginUser(user)
     if (!error) {
       setToken(token["access_token"]);
-      navigate('/create');
+      navigate('/claims');
     }
   }
   return (
