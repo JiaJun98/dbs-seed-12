@@ -37,5 +37,34 @@ def login():
         return jsonify(access_token=access_token)
     return jsonify({"msg": "Bad username or password"}), 401
 
+#Update User
+@app.route('/update',methods=['POST'])
+@jwt_required()
+def update():
+    claims =get_jwt()
+    employeeid = claims['EmployeeID']
+    if mydb.ProjectExpenseClaim.find({"EmployeeID":employeeid}):
+        firstname = request.json.get("FirstName")
+        lastname = request.json.get("LastName")
+        projectid = request.json.get("ProjectID")
+        amount = request.json.get("Amount")
+        purpose = request.json.get("Purpose")
+        mydb.Employee.find_one_and_update(
+            {"EmployeeID":employeeid},
+            {"$set" : {"FirstName":firstname,"LastName":lastname}}
+        )
+        mydb.EmployeeProjects.find_one_and_update(
+            {"EmployeeID":employeeid},
+            {"$set" : {"ProjectID":projectid}}
+        )
+        mydb.ProjectExpenseClaims.find_one_and_update(
+            {"EmployeeID":employeeid},
+            {"$set" : {"Amount":amount,"Purpose":purpose}}
+        )
+        return {"message":"Claims have been updated."}
+    return {"message":"User is not authorised."}
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
