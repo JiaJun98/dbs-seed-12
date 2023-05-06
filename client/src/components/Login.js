@@ -41,6 +41,7 @@ export default function Login({setToken, navigate}) {
     console.log(user)
     const token = await loginUser(user)
     if (!error) {
+      console.log(token["access_token"])
       setToken(token["access_token"]);
       navigate('/claims');
     }
