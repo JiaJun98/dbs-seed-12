@@ -3,7 +3,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useState } from 'react';
+//import { useState } from 'react';
+import React, { useState, useEffect }  from 'react';//added this
 
 const CreateClaim = ({onCreate}) => {
   const [firstname, setFirstname] = useState('');
@@ -49,6 +50,25 @@ const CreateClaim = ({onCreate}) => {
     // }
   };
   
+  //added this
+  const [error, setError] = useState(null);
+      const [isLoaded, setIsLoaded] = useState(false);
+      const [users, setUsers] = useState([]);
+      useEffect(() => {
+          fetch("http://127.0.0.1:80/Dbshackathon/index.php/api/expenses/currencies")
+              .then(res => res.json())
+              .then(
+                  (data) => {
+                      setIsLoaded(true);
+                      setUsers(data);
+                  },
+                  (error) => {
+                      setIsLoaded(true);
+                      setError(error);
+                  }
+              )
+        }, [])
+    //-----------------------------------------------------------------------------------
   return (
     <Container>
       <h1>Create Claim</h1>
@@ -75,7 +95,8 @@ const CreateClaim = ({onCreate}) => {
         <Form.Group as={Col} controlId="formAmount">
           <Form.Label>Currency</Form.Label>
             <Form.Select>
-              <option>select</option>
+            <option value="">select</option>
+            {users.map(user => (<option value={user.CurrencyID}>{user.CurrencyID}</option>))}
             </Form.Select>
         </Form.Group>
       </Row>
