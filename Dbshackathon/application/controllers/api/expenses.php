@@ -32,6 +32,24 @@ class Expenses extends REST_Controller{
         }
    }
 
+    // GET: <project url>/index.php/api/student
+    public function project_get(){
+        //list data method
+        //echo "This is GET Method";
+
+        $project = $this->claims_model->get_project();
+
+        $project_list = array();
+
+        if(count($project)>0){
+            $project_list = $project;
+            $this->response($project_list, REST_Controller::HTTP_OK);
+        }
+        else{
+            $this->response($project_list, REST_Controller::HTTP_NOT_FOUND);
+        }
+   }
+
 
    public function claiminfo_get(){
     //list data method

@@ -13,6 +13,14 @@ class Claims_model extends CI_Model{
         return $query->result();
     }
 
+    public function get_project(){
+        $this->db->select("*");
+        $this->db->from("employeeprojects");
+        $query = $this->db->get();
+
+        return $query->result();
+    }
+
     public function get_claiminfo($id){
         $this->db->select("b.FirstName, b.LastName, a.ProjectID, a.Amount, a.CurrencyID, a.ExpenseDate, a.Purpose");
         $this->db->from("projectexpenseclaims a, employee b");
