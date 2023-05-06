@@ -35,6 +35,26 @@ export default function CreateClaim() {
                   }
               )
         }, [])
+
+
+  //added this
+  const [error2, setError2] = useState(null);
+  const [isLoaded2, setIsLoaded2] = useState(false);
+  const [users2, setUsers2] = useState([]);
+  useEffect(() => {
+      fetch("http://127.0.0.1:80/Dbshackathon/index.php/api/expenses/project")
+          .then(res => res.json())
+          .then(
+              (data) => {
+                  setIsLoaded(true);
+                  setUsers(data);
+              },
+              (error) => {
+                  setIsLoaded(true);
+                  setError(error);
+              }
+          )
+    }, [])
     //-----------------------------------------------------------------------------------
 
   return (
@@ -54,7 +74,8 @@ export default function CreateClaim() {
         <Form.Group className="mb-3" controlId="formProjectid">
           <Form.Label>Project ID</Form.Label>
           <Form.Select>
-            <option>select</option>
+            <option value="">select</option>
+            {users2.map(user2 => (<option value={user2.ProjetID}>{user.ProjectID}</option>))}
           </Form.Select>
         </Form.Group>
 
