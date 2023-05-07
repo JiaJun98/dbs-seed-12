@@ -18,7 +18,7 @@ bcrypt = Bcrypt(app)
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 CORS(app)
-CORS(app, origins=["http://localhost:3000"])
+CORS(app, origins=["http://localhost:3000", "http://localhost:5000"])
 jwt = JWTManager(app)
 # #### Setting up MongoDB ####
 connection = 'mongodb://rwuser:Singapore123!@190.92.206.138:27017,159.138.120.227:27017/test?authSource=admin'

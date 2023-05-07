@@ -8,8 +8,13 @@ const ListClaims = () => {
 
     const getClaims = async () => {
         try {
-            const post = await fetch('http://localhost:5000/claim')
-
+            const post = await fetch('http://localhost:5000/claim', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + JSON.stringify(sessionStorage.getItem('token'))
+                }
+              })
             const jsonData = await post.json();
 
             setClaims(jsonData);
